@@ -24,12 +24,17 @@ jobs:
         # Распаковываем SDK из tar.xz
         cd $HOME/theos/sdks
         tar -xf $GITHUB_WORKSPACE/iPhoneOS15.6.sdk.tar.xz
+        
+        # Устанавливаем ldid
+        brew install ldid
 
     - name: Build Tweak
       run: |
         export THEOS=$HOME/theos
         export SDKVERSION=15.6
         export SYSROOT=$HOME/theos/sdks/iPhoneOS15.6.sdk
+        export TARGET=iphone:clang:15.6:15.6
+        export ARCHS="arm64 arm64e"
         make clean
         make package
 
