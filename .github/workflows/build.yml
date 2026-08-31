@@ -1,10 +1,9 @@
-# .github/workflows/build.yml
 name: Build AuraFlow Tweak
 
 on:
   push:
     branches: [ main ]
-  workflow_dispatch: # Позволяет запускать сборку вручную из вкладки Actions
+  workflow_dispatch:
 
 jobs:
   build:
@@ -18,7 +17,7 @@ jobs:
       run: |
         git clone --recursive https://github.com/theos/theos.git $HOME/theos
         echo "THEOS=$HOME/theos" >> $GITHUB_ENV
-        # Скачиваем и распаковываем SDK для iOS 15.6
+        # Скачиваем SDK для iOS 15.6
         mkdir -p $HOME/theos/sdks
         cd $HOME/theos/sdks
         wget https://github.com/xybp888/iOS-SDKs/raw/master/iPhoneOS15.6.sdk.zip
