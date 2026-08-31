@@ -1,0 +1,9 @@
+Package: com.gloink.auraflow
+Name: AuraFlow
+Version: 1.0.0
+Architecture: iphoneos-arm64
+Description: Анимированный градиентный фон для всего интерфейса.
+Maintainer: gloink
+Author: gloink
+Section: Tweaks
+Depends: firmware (>= 16.0), mobilesubstrate (>= 0.9.7000)
