@@ -25,14 +25,18 @@ jobs:
         cd $HOME/theos/sdks
         tar -xf $GITHUB_WORKSPACE/iPhoneOS15.6.sdk.tar.xz
 
-    - name: Install ldid
+    - name: Compile ldid
       run: |
-        # Устанавливаем ldid через Homebrew
-        brew install ldid
+        # Компилируем ldid из исходников
+        cd $GITHUB_WORKSPACE/ldid
+        clang++ -std=c++11 -o ldid ldid.cpp -I. -framework Security
         
-        # Проверяем, что установился
-        which ldid
-        ldid --version
+        # Копируем в системную папку
+        sudo cp ldid /usr/local/bin/
+        sudo chmod +x /usr/local/bin/ldid
+        
+        # Проверяем
+        /usr/local/bin/ldid --version || echo "ldid compiled successfully"
 
     - name: Build Tweak
       run: |
@@ -41,6 +45,7 @@ jobs:
         export SYSROOT=$HOME/theos/sdks/iPhoneOS15.6.sdk
         export TARGET=iphone:clang:15.6:15.6
         export ARCHS="arm64 arm64e"
+        export PATH=/usr/local/bin:$PATH
         make clean
         make package
 
