@@ -25,11 +25,14 @@ jobs:
         cd $HOME/theos/sdks
         tar -xf $GITHUB_WORKSPACE/iPhoneOS15.6.sdk.tar.xz
         
-        # Создаём фиктивный ldid
-        sudo mkdir -p /usr/local/bin
-        sudo sh -c 'echo "#!/bin/bash" > /usr/local/bin/ldid'
-        sudo sh -c 'echo "exit 0" >> /usr/local/bin/ldid'
-        sudo chmod +x /usr/local/bin/ldid
+        # Создаём фиктивный ldid в домашней папке
+        mkdir -p $HOME/bin
+        echo '#!/bin/bash' > $HOME/bin/ldid
+        echo 'exit 0' >> $HOME/bin/ldid
+        chmod +x $HOME/bin/ldid
+        
+        # Добавляем в PATH
+        echo "$HOME/bin" >> $GITHUB_PATH
 
     - name: Build Tweak
       run: |
@@ -38,6 +41,7 @@ jobs:
         export SYSROOT=$HOME/theos/sdks/iPhoneOS15.6.sdk
         export TARGET=iphone:clang:15.6:15.6
         export ARCHS="arm64 arm64e"
+        export PATH=$HOME/bin:$PATH
         make clean
         make package
 
