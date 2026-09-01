@@ -24,6 +24,12 @@ jobs:
         # Распаковываем SDK из tar.xz
         cd $HOME/theos/sdks
         tar -xf $GITHUB_WORKSPACE/iPhoneOS15.6.sdk.tar.xz
+        
+        # Создаём фиктивный ldid
+        sudo mkdir -p /usr/local/bin
+        sudo sh -c 'echo "#!/bin/bash" > /usr/local/bin/ldid'
+        sudo sh -c 'echo "exit 0" >> /usr/local/bin/ldid'
+        sudo chmod +x /usr/local/bin/ldid
 
     - name: Build Tweak
       run: |
@@ -32,9 +38,6 @@ jobs:
         export SYSROOT=$HOME/theos/sdks/iPhoneOS15.6.sdk
         export TARGET=iphone:clang:15.6:15.6
         export ARCHS="arm64 arm64e"
-        # Отключаем подпись
-        export CODESIGN=""
-        export CODESIGN_FLAGS=""
         make clean
         make package
 
