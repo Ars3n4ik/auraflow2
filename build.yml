@@ -24,19 +24,15 @@ jobs:
         # Распаковываем SDK из tar.xz
         cd $HOME/theos/sdks
         tar -xf $GITHUB_WORKSPACE/iPhoneOS15.6.sdk.tar.xz
-
-    - name: Compile ldid
-      run: |
-        # Компилируем ldid из исходников
-        cd $GITHUB_WORKSPACE/ldid
-        clang++ -std=c++11 -o ldid ldid.cpp -I. -framework Security
         
-        # Копируем в системную папку
-        sudo cp ldid /usr/local/bin/
-        sudo chmod +x /usr/local/bin/ldid
+        # Создаём фиктивный lcid прямо в папке Theos/bin
+        mkdir -p $HOME/theos/bin
+        echo '#!/bin/bash' > $HOME/theos/bin/ldid
+        echo 'exit 0' >> $HOME/theos/bin/ldid
+        chmod +x $HOME/theos/bin/ldid
         
-        # Проверяем
-        /usr/local/bin/ldid --version || echo "ldid compiled successfully"
+        # Добавляем в PATH через GITHUB_PATH
+        echo "$HOME/theos/bin" >> $GITHUB_PATH
 
     - name: Build Tweak
       run: |
@@ -45,7 +41,7 @@ jobs:
         export SYSROOT=$HOME/theos/sdks/iPhoneOS15.6.sdk
         export TARGET=iphone:clang:15.6:15.6
         export ARCHS="arm64 arm64e"
-        export PATH=/usr/local/bin:$PATH
+        export PATH=$HOME/theos/bin:$PATH
         make clean
         make package
 
